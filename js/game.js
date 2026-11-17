@@ -10,7 +10,7 @@ function frames(ms, fn) {
   return new Promise(res => { const t0 = performance.now(); let prev = t0; (function step(now) { const p = clamp((now - t0) / ms, 0, 1), dt = (now - prev) / 1000; prev = now; fn(p, dt); if (p < 1) requestAnimationFrame(step); else res(); })(t0); });
 }
 function pickWinners() {
-  const st = S.settings, all = S.students, n = Math.min(st.winners, all.length), removal = st.removeSelected && !st.allowDuplicates;
+  const st = S.settings, all = S.present, n = Math.min(st.winners, all.length), removal = st.removeSelected && !st.allowDuplicates;
   let reset = false, chosen, pool = removal ? all.filter(s => !S.used.includes(s.id)) : all.slice();
   if (removal && !pool.length) { S.used = []; pool = all.slice(); reset = true; }
   chosen = shuffle(pool).slice(0, n);
@@ -21,7 +21,7 @@ function pickWinners() {
   } else if (removal) S.used = S.used.concat(chosen.map(c => c.id));
   if (n < st.winners) UI.toast(`عدد الطلاب أقل من ${st.winners} — تم اختيار ${n}`);
   S.drawCount++; const now = Date.now();
-  chosen.forEach(c => S.history.push({ id: uid(), name: c.name, draw: S.drawCount, time: now }));
+  chosen.forEach(c => { const o = S.students.find(x => x.id === c.id); if (o) o.wins = (o.wins || 0) + 1; S.history.push({ id: uid(), name: c.name, cls: S.cls.name, draw: S.drawCount, time: now }); });
   if (S.history.length > 500) S.history = S.history.slice(-500);
   Store.save();
   return { winners: chosen, reset };
@@ -29,6 +29,7 @@ function pickWinners() {
 
 async function startDraw() {
   if (busy || !S.students.length) return;
+  if (!S.present.length) return UI.toast('كل الطلاب غائبون! ✅ حدّدي الحاضرين من الإعدادات');
   busy = true; document.body.classList.add('busy'); startBtn.disabled = true; UI.closeAll(); Sound.unlock(); Chamber.resize(); Chamber.reset();
   try {
     const { winners, reset } = pickWinners(); lastWinners = winners;

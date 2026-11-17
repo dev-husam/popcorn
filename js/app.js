@@ -62,5 +62,5 @@ function buildBg() {
 }
 
 /* ------------------------------ Boot ------------------------------ */
-Store.load(); Fx.init(); Chamber.init(); buildBg(); bind(); PWA.bind(); UI.renderAll();
+Store.load(); Fx.init(); Chamber.init(); buildBg(); bind(); PWA.bind(); bindExtras(); UI.renderAll();
 addEventListener('resize', () => { Chamber.resize(); });

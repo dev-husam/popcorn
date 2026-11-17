@@ -13,7 +13,7 @@ const Students = {
     for (const n of names) {
       if (have.has(n.toLowerCase())) { dup++; continue; }
       if (S.students.length >= 300) { full = true; break; }
-      S.students.push({ id: uid(), name: n, emoji: pick(EMOJIS) }); have.add(n.toLowerCase()); added++;
+      S.students.push({ id: uid(), name: n, emoji: pick(EMOJIS), absent: false, wins: 0 }); have.add(n.toLowerCase()); added++;
     }
     this.changed();
     UI.toast(added ? `تمت إضافة ${added} ${added === 1 ? 'طالب' : 'طلاب'} 🎉${dup ? ` (تم تجاهل ${dup} مكرر)` : ''}` : dup ? 'هذا الاسم موجود مسبقاً 🙂' : 'لم تتم إضافة أي اسم');
@@ -26,6 +26,7 @@ const Students = {
     if (S.students.some(s => s.id !== id && s.name.toLowerCase() === n.toLowerCase())) { UI.toast('هذا الاسم موجود مسبقاً 🙂'); return; }
     const s = S.students.find(x => x.id === id); if (s) s.name = n; editingId = null; this.changed();
   },
+  toggleAbsent(id) { const s = S.students.find(x => x.id === id); if (s) { s.absent = !s.absent; this.changed(); } },
   changed() { const ids = new Set(S.students.map(s => s.id)); S.used = S.used.filter(i => ids.has(i)); Store.save(); UI.renderStudents(); UI.renderMain(); }
 };
 

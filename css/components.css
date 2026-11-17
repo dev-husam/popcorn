@@ -81,3 +81,19 @@ input[type=range]{width:min(260px,45vw);height:36px;accent-color:var(--pink)}
 .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 
+/* ---- classes, absent, stepper, teams ---- */
+.classbar{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:rgba(255,255,255,.92);border-radius:999px;padding:2px 8px 2px 16px;font-size:22px;font-weight:900;box-shadow:0 5px 0 rgba(64,32,95,.2)}
+.classbar select{border:0;background:transparent;font-weight:900;font-size:22px;min-height:44px;color:var(--ink);cursor:pointer;max-width:60vw}
+.selectbig{flex:1 1 200px;min-height:56px;border:4px solid var(--purple);border-radius:20px;padding:4px 14px;font-size:22px;font-weight:700;background:#fff;color:var(--ink)}
+.askinput{display:block;width:100%;min-height:56px;border:4px solid var(--purple);border-radius:20px;padding:4px 16px;font-size:24px;font-weight:700;margin:0 0 18px}
+.chip.absent{opacity:.55;filter:grayscale(.6)}
+.chip.absent .nm{text-decoration:line-through}
+.stepper{display:flex;align-items:center;gap:12px}
+.stepper button{width:56px;height:56px;border-radius:50%;font-size:32px;font-weight:900;background:var(--orange);color:#fff;border:4px solid var(--ink);box-shadow:0 4px 0 rgba(64,32,95,.4)}
+.stepper button:active{transform:translateY(3px);box-shadow:none}
+.stepper output{min-width:48px;text-align:center;font-size:34px;font-weight:900}
+.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.team{background:var(--c,#eee);border:4px solid var(--ink);border-radius:24px;padding:10px 14px 14px;box-shadow:0 6px 0 rgba(64,32,95,.3);animation:bump .5s cubic-bezier(.2,1.6,.4,1) both}
+.team h3{margin:0 0 6px;font-size:24px;font-weight:900}
+.team ul{margin:0;padding:0;list-style:none;display:grid;gap:4px}
+.team li{background:rgba(255,255,255,.7);border-radius:12px;padding:2px 10px;font-weight:700;font-size:21px;overflow-wrap:anywhere}

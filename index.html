@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="candy">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -30,9 +30,11 @@
     <div class="group">
       <button class="iconbtn lockable" id="btnSettings" title="إعدادات المعلمة" aria-label="إعدادات المعلمة">⚙️</button>
       <button class="iconbtn lockable" id="btnHistory" title="سجل الفائزين" aria-label="سجل الفائزين">📜</button>
+      <button class="iconbtn lockable" id="btnTeams" title="تكوين فرق" aria-label="تكوين فرق">🧩</button>
     </div>
     <div class="group">
       <button class="iconbtn" id="btnInstall" title="تثبيت التطبيق" aria-label="تثبيت التطبيق" hidden>⬇️</button>
+      <button class="iconbtn" id="btnFull" title="ملء الشاشة" aria-label="ملء الشاشة">⛶</button>
       <button class="iconbtn" id="btnSoundPanel" title="الصوت" aria-label="الصوت">🎚️</button>
       <button class="iconbtn" id="btnMute" title="كتم / تشغيل الصوت" aria-label="كتم أو تشغيل الصوت" aria-pressed="false">🔊</button>
     </div>
@@ -41,6 +43,7 @@
   <main id="stage">
     <h1>🍿 ماكينة الفشار السحرية</h1>
     <p class="sub">من سيكون نجم اليوم؟</p>
+    <label class="classbar" id="classBar"><span class="sr">الصف الحالي</span>🏫 <select id="classSelect" aria-label="الصف الحالي"></select></label>
     <p class="prompt" id="prompt" aria-live="polite">🍿 مستعدين نختار بطل اليوم؟</p>
 
     <div id="machineWrap">
@@ -151,6 +154,15 @@
     <div class="body">
       <section class="panel active" data-panel="students">
         <div class="card">
+          <h3>🏫 الصفوف</h3>
+          <div class="addrow">
+            <select id="classSelect2" class="selectbig" aria-label="اختيار الصف"></select>
+            <button class="btn small mint" id="btnClsNew" type="button">+ صف جديد</button>
+            <button class="btn small orange" id="btnClsRename" type="button">✏️ إعادة تسمية</button>
+            <button class="btn small red" id="btnClsDel" type="button">🗑️ حذف الصف</button>
+          </div>
+        </div>
+        <div class="card">
           <h3>إضافة الطلاب</h3>
           <div class="addrow">
             <textarea id="nameInput" rows="1" maxlength="4000" placeholder="اكتب اسم الطالب هنا..." aria-label="اسم الطالب" dir="rtl"></textarea>
@@ -166,6 +178,7 @@
           <button class="btn small sky" id="btnShuffle" type="button">🔀 إعادة ترتيب الأسماء</button>
           <button class="btn small mint" id="btnImport" type="button">📥 استيراد (txt)</button>
           <button class="btn small orange" id="btnExport" type="button">📤 تصدير (txt)</button>
+          <button class="btn small yellow" id="btnAbsentAll" type="button">✅ حضور الجميع</button>
           <button class="btn small red" id="btnClearAll" type="button">🗑️ حذف جميع الأسماء</button>
           <input type="file" id="fileInput" accept=".txt,text/plain" hidden>
         </div>
@@ -178,9 +191,11 @@
         <p class="hint">عند تفعيل «السماح بالتكرار» لا تتم إزالة أحد من السحب. وعند إلغائه مع تفعيل الإزالة، تعود القائمة كاملة بعد اختيار الجميع.</p>
         <div class="row"><span>عدد الفائزين</span><div class="seg" data-seg="winners"><button type="button" data-val="1">1</button><button type="button" data-val="2">2</button><button type="button" data-val="3">3</button><button type="button" data-val="5">5</button></div></div>
         <div class="row"><span>سرعة الحركة</span><div class="seg" data-seg="speed"><button type="button" data-val="slow">بطيئة</button><button type="button" data-val="normal">عادية</button><button type="button" data-val="fast">سريعة</button></div></div>
+        <div class="row"><span>الثيم (الألوان)</span><div class="seg" data-seg="theme"><button type="button" data-val="candy">🍬 حلوى</button><button type="button" data-val="ocean">🌊 محيط</button><button type="button" data-val="sunset">🌅 غروب</button><button type="button" data-val="forest">🌳 غابة</button></div></div>
         <label class="row"><span>تفعيل الصوت</span><span class="sw"><input type="checkbox" data-set="sound"><i></i></span></label>
         <label class="row"><span>تفعيل الموسيقى الخلفية</span><span class="sw"><input type="checkbox" data-set="music"><i></i></span></label>
         <label class="row"><span>الاحتفال التلقائي بعد الإعلان</span><span class="sw"><input type="checkbox" data-set="autoCelebrate"><i></i></span></label>
+        <p class="hint">⌨️ اختصارات: <b>مسافة</b> أو <b>Enter</b> لبدء السحب، <b>F</b> لملء الشاشة، <b>M</b> لكتم الصوت، <b>T</b> للفرق.</p>
       </section>
 
       <section class="panel" data-panel="teacher">
@@ -193,6 +208,11 @@
           <h3>إعادة ضبط السحب</h3>
           <p class="hint" style="margin-bottom:10px">يعيد جميع الطلاب إلى قائمة السحب الحالية (دون حذف السجل أو الأسماء).</p>
           <button class="btn orange" id="btnResetDraw" type="button">🔄 إعادة ضبط</button>
+        </div>
+        <div class="card">
+          <h3>عدد مرات الفوز</h3>
+          <p class="hint" style="margin-bottom:10px">يصفّر عدّاد 🏅 لجميع طلاب الصف الحالي.</p>
+          <button class="btn mint" id="btnResetWins" type="button">🏅 تصفير العدّاد</button>
         </div>
         <div class="card">
           <h3>الإعدادات الافتراضية</h3>
@@ -230,10 +250,29 @@
   </div>
 </div>
 
+<!-- ============================ TEAMS ============================ -->
+<div class="modal" id="teamsModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="teamTitle">
+    <header><h2 id="teamTitle">🧩 تكوين فرق</h2><button class="closebtn" type="button" data-close>إغلاق ✖</button></header>
+    <div class="body">
+      <div class="row"><span>عدد الفرق</span>
+        <div class="stepper"><button type="button" id="teamMinus" aria-label="أقل">−</button><output id="teamCount">2</output><button type="button" id="teamPlus" aria-label="أكثر">+</button></div>
+      </div>
+      <div class="actions" style="margin:10px 0 16px">
+        <button class="btn pink" id="btnMakeTeams" type="button">🎲 وزّع الطلاب</button>
+        <button class="btn small sky" id="btnCopyTeams" type="button">📋 نسخ</button>
+      </div>
+      <p class="hint" id="teamHint">يتم استبعاد الطلاب الغائبين تلقائياً.</p>
+      <div class="teams" id="teamGrid"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ============================ CONFIRM ============================ -->
 <div class="modal" id="confirmModal" hidden style="z-index:160">
   <div class="sheet narrow confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmMsg" style="padding:26px 20px">
     <p class="confirmmsg" id="confirmMsg"></p>
+    <input id="askInput" class="askinput" maxlength="30" hidden aria-label="الاسم">
     <div class="actions"><button class="btn red" id="confirmYes" type="button">نعم</button><button class="btn" id="confirmNo" type="button">إلغاء</button></div>
   </div>
 </div>
@@ -249,8 +288,10 @@
 <script src="js/chamber.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/students.js"></script>
+<script src="js/teams.js"></script>
 <script src="js/game.js"></script>
 <script src="js/pwa.js"></script>
+<script src="js/extras.js"></script>
 <script src="js/app.js"></script>
 
 </body>

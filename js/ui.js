@@ -13,6 +13,16 @@ const UI = {
       $('#confirmYes').onclick = () => done(true); $('#confirmNo').onclick = () => done(false);
     });
   },
+  ask(msg, val = '') {
+    return new Promise(res => {
+      const m = $('#confirmModal'), inp = $('#askInput');
+      $('#confirmMsg').textContent = msg; inp.hidden = false; inp.value = val; $('#confirmYes').textContent = 'حفظ'; m.hidden = false; inp.focus(); inp.select();
+      const done = v => { m.hidden = true; inp.hidden = true; $('#confirmYes').onclick = $('#confirmNo').onclick = inp.onkeydown = null; res(v); };
+      $('#confirmYes').onclick = () => done(inp.value.trim().slice(0, 30) || null);
+      $('#confirmNo').onclick = () => done(null);
+      inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); $('#confirmYes').click(); } };
+    });
+  },
   banner(txt) { const b = document.createElement('div'); b.className = 'banner'; b.textContent = txt; document.body.appendChild(b); setTimeout(() => b.remove(), 1850); },
   tab(name) { $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === name))); $$('.panel').forEach(p => p.classList.toggle('active', p.dataset.panel === name)); },
   syncControls() {
@@ -20,6 +30,8 @@ const UI = {
     $$('[data-set]').forEach(i => { i.checked = !!st[i.dataset.set]; });
     $$('[data-range]').forEach(i => { i.value = Math.round(st[i.dataset.range] * 100); });
     $$('[data-seg]').forEach(g => $$('button', g).forEach(b => b.setAttribute('aria-pressed', String(String(st[g.dataset.seg]) === b.dataset.val))));
+    document.documentElement.dataset.theme = st.theme;
+    $('meta[name=theme-color]').content = THEME_COLORS[st.theme];
     $('#btnMute').textContent = st.muted ? '🔇' : '🔊'; $('#btnMute').setAttribute('aria-pressed', String(st.muted));
     $('#btnMute2').textContent = st.muted ? '🔇 كتم (اضغط للتشغيل)' : '🔊 تشغيل (اضغط للكتم)';
   },
@@ -29,7 +41,7 @@ const UI = {
     if (!has) $('#emptyChar').innerHTML = popcornSVG(true);
     else requestAnimationFrame(() => Chamber.resize());
     const st = S.settings, removal = st.removeSelected && !st.allowDuplicates, r = $('#remain');
-    if (has && removal) { const left = S.students.filter(s => !S.used.includes(s.id)).length; r.hidden = false; r.textContent = `المتبقون في هذه الجولة: ${left} من ${S.students.length}`; } else r.hidden = true;
+    if (has && removal) { const pr = S.present, left = pr.filter(s => !S.used.includes(s.id)).length; r.hidden = false; r.textContent = `المتبقون في هذه الجولة: ${left} من ${pr.length}`; } else r.hidden = true;
   },
   renderStudents() {
     const q = $('#search').value.trim().toLowerCase(), box = $('#studentList'); box.textContent = '';
@@ -37,7 +49,7 @@ const UI = {
     const items = S.students.filter(s => !q || s.name.toLowerCase().includes(q));
     if (!items.length) { const d = document.createElement('div'); d.className = 'none'; d.style.gridColumn = '1/-1'; d.textContent = S.students.length ? 'لا توجد نتائج مطابقة 🔍' : 'لم تتم إضافة طلاب بعد ✏️'; box.appendChild(d); return; }
     items.forEach((s, i) => {
-      const chip = document.createElement('div'); chip.className = 'chip'; chip.style.setProperty('--c', ['#e4d4ff', '#ffd1e8', '#fff0a8', '#ffdcb0', '#c4f0ff', '#c7f7e3'][i % 6]);
+      const chip = document.createElement('div'); chip.className = 'chip' + (s.absent ? ' absent' : ''); chip.style.setProperty('--c', ['#e4d4ff', '#ffd1e8', '#fff0a8', '#ffdcb0', '#c4f0ff', '#c7f7e3'][i % 6]);
       const av = document.createElement('span'); av.className = 'av'; av.textContent = s.emoji; chip.appendChild(av);
       if (editingId === s.id) {
         const inp = document.createElement('input'); inp.value = s.name; inp.maxLength = 40; inp.setAttribute('aria-label', 'تعديل الاسم');
@@ -47,7 +59,8 @@ const UI = {
       } else {
         const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = s.name; chip.appendChild(nm);
         if (S.used.includes(s.id) && S.settings.removeSelected && !S.settings.allowDuplicates) { const w = document.createElement('span'); w.className = 'won'; w.title = 'تم اختياره في هذه الجولة'; w.textContent = '⭐'; chip.appendChild(w); }
-        chip.append(mkBtn('✏️', 'تعديل', () => { editingId = s.id; UI.renderStudents(); }), mkBtn('🗑️', 'حذف', () => Students.remove(s.id)));
+        if (s.wins) { const w = document.createElement('span'); w.className = 'won'; w.title = 'عدد مرات الفوز'; w.textContent = '🏅' + s.wins; chip.appendChild(w); }
+        chip.append(mkBtn(s.absent ? '🚫' : '✅', s.absent ? 'غائب — اضغط ليصبح حاضراً' : 'حاضر — اضغط ليصبح غائباً', () => Students.toggleAbsent(s.id)), mkBtn('✏️', 'تعديل', () => { editingId = s.id; UI.renderStudents(); }), mkBtn('🗑️', 'حذف', () => Students.remove(s.id)));
         box.appendChild(chip);
       }
     });
@@ -57,11 +70,18 @@ const UI = {
     if (!S.history.length) { const li = document.createElement('li'); li.className = 'none'; li.style.display = 'block'; li.textContent = 'لا يوجد فائزون بعد 🍿'; ul.appendChild(li); return; }
     [...S.history].reverse().forEach(h => {
       const li = document.createElement('li'), no = document.createElement('span'), nm = document.createElement('span'), tm = document.createElement('time');
-      no.className = 'no'; no.textContent = '#' + h.draw; nm.className = 'nm'; nm.textContent = h.name; tm.textContent = fmtDate(h.time);
+      no.className = 'no'; no.textContent = '#' + h.draw; nm.className = 'nm'; nm.textContent = h.name + (h.cls && S.classes.length > 1 ? ' — ' + h.cls : ''); tm.textContent = fmtDate(h.time);
       li.append(no, nm, tm); ul.appendChild(li);
     });
   },
-  renderAll() { UI.renderMain(); UI.renderStudents(); UI.renderHistory(); UI.syncControls(); }
+  renderClasses() {
+    for (const sel of [$('#classSelect'), $('#classSelect2')]) {
+      sel.textContent = '';
+      S.classes.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = `${c.name} (${c.students.length})`; o.selected = c.id === S.active; sel.appendChild(o); });
+    }
+    $('#classBar').hidden = S.classes.length < 2;
+  },
+  renderAll() { UI.renderClasses(); UI.renderMain(); UI.renderStudents(); UI.renderHistory(); UI.syncControls(); }
 };
 let editingId = null;
 function mkBtn(txt, label, fn) { const b = document.createElement('button'); b.type = 'button'; b.textContent = txt; b.title = label; b.setAttribute('aria-label', label); b.addEventListener('click', fn); return b; }

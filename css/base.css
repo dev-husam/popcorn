@@ -23,6 +23,12 @@ button{cursor:pointer;border:0}
 :focus-visible{outline:4px solid var(--sky);outline-offset:3px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
+/* ============================== THEMES ============================== */
+[data-theme="ocean"]{--bg:linear-gradient(160deg,#1e5bd8 0%,#2d8fe6 35%,#4DCCF5 70%,#6EE7B7 100%)}
+[data-theme="sunset"]{--bg:linear-gradient(160deg,#5b2a86 0%,#c2417f 38%,#FF7A59 72%,#FFD93D 100%)}
+[data-theme="forest"]{--bg:linear-gradient(160deg,#1f7a5a 0%,#3fae7a 38%,#9bdc6b 72%,#FFE97A 100%)}
+body{transition:background .6s}
+
 /* ============================== BACKGROUND ============================== */
 #bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .cloud{position:absolute;background:#fff;border-radius:100px;opacity:.85;animation:drift linear infinite}
