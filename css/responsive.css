@@ -1,0 +1,96 @@
+/* ============================== RESPONSIVE ==============================
+   Breakpoints (mobile-first thinking, written as overrides):
+   - ≥1800px            large smartboards / TVs
+   - ≤900px             tablets portrait
+   - ≤640px             phones (modals become full-screen)
+   - ≤400px             small phones
+   - landscape ≤560px   phones / short laptop windows → two-column stage
+   ======================================================================== */
+
+/* safe areas (notches, home indicator) */
+.topbar{top:max(12px,env(safe-area-inset-top));inset-inline-start:max(12px,env(safe-area-inset-right));inset-inline-end:max(12px,env(safe-area-inset-left))}
+#stage{padding-bottom:max(28px,env(safe-area-inset-bottom))}
+
+/* touch devices: no sticky hover, bigger hit areas */
+@media (hover:none){
+  .iconbtn:hover,.btn:hover,#startBtn:hover:not(:disabled),.chip button:hover{transform:none}
+}
+
+/* large smartboards */
+@media (min-width:1800px){
+  body{font-size:24px}
+  #stage{max-width:1500px}
+  .iconbtn{width:72px;height:72px;font-size:34px}
+  .sheet{width:min(1200px,100%)}
+  .sheet.narrow{width:min(720px,100%)}
+}
+
+/* tablets */
+@media (max-width:900px){
+  .chips{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+}
+
+/* phones */
+@media (max-width:640px){
+  body{font-size:20px}
+  .iconbtn{width:48px;height:48px;font-size:22px;border-radius:15px}
+  .topbar{gap:6px}
+  .topbar .group{gap:6px}
+  #stage{padding-top:calc(max(8px,env(safe-area-inset-top)) + 58px);padding-inline:12px}
+  .modal{padding:0}
+  .sheet,.sheet.narrow{width:100%;height:100dvh;max-height:100dvh;border-radius:0;border-width:0}
+  .sheet.confirm{height:auto;max-height:none;border-radius:28px;margin:16px;border-width:6px}
+  .sheet header{padding-top:max(14px,env(safe-area-inset-top))}
+  .body{padding-bottom:max(22px,env(safe-area-inset-bottom))}
+  .chips{grid-template-columns:1fr}
+  .row{flex-wrap:wrap}
+  .wcard{border-radius:36px;padding:16px 12px 20px;margin-block:max(12px,env(safe-area-inset-top)) 16px}
+  .celeb .btn{flex:1 1 44%;padding-inline:10px;font-size:18px}
+  .tab{padding:8px 14px;font-size:20px}
+  .toolbar .btn{flex:1 1 40%}
+  .addrow .btn{flex:1 1 100%}
+}
+
+/* small phones: keep six top buttons on one row */
+@media (max-width:400px){
+  .iconbtn{width:44px;height:44px;font-size:20px;border-radius:13px}
+  .topbar,.topbar .group{gap:4px}
+  h1{font-size:30px}
+}
+
+/* very narrow screens (foldables, old phones) */
+@media (max-width:340px){
+  .iconbtn{width:38px;height:38px;font-size:17px;border-radius:11px}
+  .topbar,.topbar .group{gap:3px}
+  .machine{min-height:260px}
+}
+
+/* phones in landscape / very short windows: machine beside the text */
+@media (max-height:560px) and (orientation:landscape){
+  #stage{display:grid;grid-template-columns:1fr auto;grid-auto-rows:min-content;align-content:center;align-items:center;column-gap:24px;
+    padding:calc(max(8px,env(safe-area-inset-top)) + 54px) max(16px,env(safe-area-inset-left)) 8px max(16px,env(safe-area-inset-right));max-width:1000px}
+  #stage>*{grid-column:1}
+  #stage>#machineWrap{grid-column:2;grid-row:1/span 8;margin:0}
+  #stage>#empty{grid-column:1/-1}
+  .machine{height:calc(100dvh - 76px);min-height:230px}
+  h1{font-size:clamp(26px,5vw,40px)}
+  .sub{font-size:20px}
+  .prompt{font-size:20px;margin:6px 0}
+  .tagline{font-size:18px}
+  .deco{display:none}
+  .wcard{padding:10px 14px 14px;margin-block:8px}
+  .trophy{font-size:44px}
+  .wtitle{font-size:30px}
+  .wlabel,.wclap{font-size:20px;margin:2px 0}
+  .celeb{margin-bottom:8px}
+  .celeb .btn,.actions .btn{min-height:44px;font-size:17px;padding-block:2px}
+  .wname{padding:2px 22px 4px;border-width:4px}
+  .sheet header{padding-block:6px}
+  .closebtn{height:46px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .cloud,.floaty,.twinkle,.deco{display:none}
+  body{animation:none}
+}

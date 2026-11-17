@@ -1,0 +1,63 @@
+/* ============================== TOKENS ============================== */
+:root{
+  --purple:#8B5CF6; --pink:#FF69B4; --yellow:#FFD93D; --orange:#FF9F43;
+  --sky:#4DCCF5; --mint:#6EE7B7; --cream:#FFF8E7; --ink:#40205F;
+  --red:#E8344E;
+  --shadow:0 12px 30px rgba(64,32,95,.28);
+  --radius:28px;
+  --bg:linear-gradient(160deg,#8B5CF6 0%,#b36cf0 28%,#FF69B4 62%,#FF9F43 100%);
+  --font:'Cairo','Baloo Bhaijaan 2','Tajawal','Segoe UI',Tahoma,Arial,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:var(--font);font-size:20px;line-height:1.5;color:var(--ink);
+  background:var(--bg);
+  background-size:220% 220%;animation:bgShift 22s ease-in-out infinite alternate;
+  overflow-x:hidden;min-height:100vh;
+}
+@keyframes bgShift{from{background-position:0% 0%}to{background-position:100% 100%}}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:0}
+:focus-visible{outline:4px solid var(--sky);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ============================== BACKGROUND ============================== */
+#bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.cloud{position:absolute;background:#fff;border-radius:100px;opacity:.85;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:50%;height:160%;left:15%;top:-70%}
+.cloud::after{width:38%;height:130%;right:14%;top:-45%}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+.floaty{position:absolute;animation:floatUp linear infinite;opacity:.85;user-select:none}
+@keyframes floatUp{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.9}90%{opacity:.9}100%{transform:translateY(-115vh) rotate(360deg);opacity:0}}
+.twinkle{position:absolute;color:#FFE97A;animation:twinkle 2.4s ease-in-out infinite;text-shadow:0 0 12px #fff}
+@keyframes twinkle{0%,100%{transform:scale(.7) rotate(0);opacity:.55}50%{transform:scale(1.25) rotate(25deg);opacity:1}}
+
+/* ============================== LAYOUT ============================== */
+#app{position:relative;z-index:1;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center}
+.topbar{position:fixed;top:12px;inset-inline:12px;display:flex;justify-content:space-between;gap:10px;z-index:20;pointer-events:none}
+.topbar .group{display:flex;gap:10px;pointer-events:auto}
+.iconbtn{
+  width:58px;height:58px;border-radius:20px;font-size:28px;line-height:1;display:grid;place-items:center;
+  background:rgba(255,255,255,.88);box-shadow:0 6px 0 rgba(64,32,95,.25),var(--shadow);transition:transform .15s,background .15s;
+}
+.iconbtn:hover{transform:translateY(-3px) rotate(-4deg);background:#fff}
+.iconbtn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(64,32,95,.25)}
+.iconbtn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+#stage{width:100%;max-width:1100px;padding:76px 16px 28px;display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;justify-content:center}
+h1{
+  margin:0;font-weight:900;font-size:clamp(32px,4.4vw,64px);line-height:1.15;color:#fff;
+  text-shadow:0 4px 0 var(--ink),0 8px 18px rgba(64,32,95,.45);
+}
+.sub{margin:4px 0 0;font-weight:700;font-size:clamp(22px,2.4vw,34px);color:var(--yellow);text-shadow:0 3px 0 var(--ink)}
+.prompt{
+  margin:14px 0 8px;font-weight:900;font-size:clamp(22px,2.6vw,36px);color:var(--ink);
+  background:rgba(255,255,255,.92);padding:6px 26px;border-radius:999px;box-shadow:0 6px 0 rgba(64,32,95,.2);min-height:1.6em;
+}
+.prompt.bump{animation:bump .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes bump{from{transform:scale(.6) rotate(-4deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.tagline{margin:10px 0 0;font-weight:700;font-size:clamp(20px,2vw,28px);color:#fff;text-shadow:0 2px 0 var(--ink)}
+.remain{margin:4px 0 0;font-size:20px;font-weight:700;color:#fff;background:rgba(64,32,95,.35);padding:2px 16px;border-radius:99px}
+
